@@ -1,5 +1,5 @@
 :root {
-  --text: rgba(255,255,255,0.95);
+  --text: rgba(255, 255, 255, 0.95);
   --bg: #111;
 }
 
@@ -64,7 +64,7 @@ body {
 }
 
 .label {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 h3 {
@@ -82,7 +82,7 @@ h3 {
 }
 
 #add-btn {
-    font-size: 2rem;
+  font-size: 2rem;
   /* font-size: 7cqw; */
   padding: 18px;
   border-radius: 72px;
@@ -96,7 +96,7 @@ h3 {
 
 @media (width > 32rem) {
   .big-number {
-  font-size: 5rem;
+    font-size: 5rem;
   }
 
   .label {

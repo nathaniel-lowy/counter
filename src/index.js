@@ -2,7 +2,10 @@ import "./styles.css";
 
 let falls = [];
 // The below counters should push a new value in each new day/week/month/year,
-// and increment the latest position element each fall
+// and increment the latest position element each update.
+// However, a check will need to be incorporated to reset the data each year,
+// so that arrays don't load in the new year with new data. Testing the year
+// against the latest save should resolve this issue.
 let days = [];
 let weeks = [];
 let months = [];
@@ -22,40 +25,6 @@ for (let i = 0; i < 200; i++) {
 }
 
 document.querySelector("#add-btn").addEventListener("click", addFall);
-
-// Will later have to set up functionality so that every additional fall
-// updates the appropriate array counter, so that a long gap does not affect
-// accuracy. Such as: If a week is skipped, that week's counter was already
-// updated, so there is no need to check if there's been a gap.
-// function checkResets() {
-//   const today = new Date();
-//   const last = falls.at(-1);
-
-//   // Check day
-//   if (today.getDate() > last.getDate()) {
-//     counters[0] = 0;
-//   }
-
-//   // Check week using the getWeek function from weeknumber.com (attributed below)
-//   if (today.getWeek() > last.getWeek()) {
-//     counters[1] = 0;
-//   }
-
-//   // Check month
-//   if (today.getMonth() > last.getMonth()) {
-//     counters[2] = 0;
-//   }
-
-//   // Check year
-//   if (today.getFullYear() > last.getFullYear()) {
-//     counters[3] = 0;
-//   }
-
-//   console.log(today.getDate());
-//   console.log(today.getWeek());
-//   console.log(today.getMonth());
-//   console.log("Year", today.getFullYear());
-// }
 
 // This script is released to the public domain and may be used, modified and
 // distributed without restrictions. Attribution not necessary but appreciated.
@@ -127,7 +96,10 @@ load();
 displayFalls();
 
 function save() {
-  localStorage.setItem("fall-counter-heading", JSON.stringify(document.querySelector("h3").textContent));
+  localStorage.setItem(
+    "fall-counter-heading",
+    JSON.stringify(document.querySelector("h3").textContent),
+  );
   localStorage.setItem("fall-counter-falls", JSON.stringify(falls));
   localStorage.setItem("fall-counter-days", JSON.stringify(days));
   localStorage.setItem("fall-counter-weeks", JSON.stringify(weeks));
@@ -136,17 +108,19 @@ function save() {
 }
 
 function load() {
-  console.log("load called")
+  console.log("load called");
   if (localStorage.getItem("fall-counter-falls") !== null) {
     const fallStrings = JSON.parse(localStorage.getItem("fall-counter-falls"));
-    document.querySelector("h3").textContent = JSON.parse(localStorage.getItem("fall-counter-heading"));
+    document.querySelector("h3").textContent = JSON.parse(
+      localStorage.getItem("fall-counter-heading"),
+    );
     days = JSON.parse(localStorage.getItem("fall-counter-days"));
     weeks = JSON.parse(localStorage.getItem("fall-counter-weeks"));
     months = JSON.parse(localStorage.getItem("fall-counter-months"));
     years = JSON.parse(localStorage.getItem("fall-counter-years"));
 
-    fallStrings.forEach(fall => {
+    fallStrings.forEach((fall) => {
       falls.push(new Date(fall));
-    })
+    });
   }
 }
