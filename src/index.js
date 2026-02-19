@@ -24,7 +24,57 @@ for (let i = 0; i < 200; i++) {
   years.push(0);
 }
 
+function dateParserExport(data) {
+  const options = {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  };
+  const formatter = new Intl.DateTimeFormat("en-us", options);
+  const dateArray = [];
+  data.forEach(date => {
+    const dateObject = new Date(date);
+    dateArray.push(formatter.format(dateObject));
+  });
+  return dateArray;
+}
+
 document.querySelector("#add-btn").addEventListener("click", addFall);
+document.querySelector("#exportText").addEventListener("click", () => {
+  const dateArray = dateParserExport(JSON.parse(localStorage.getItem("fall-counter-falls")));
+  const dateString = dateArray.join('\n');
+  const blob = new Blob([dateString], { type: "application/json" });
+  const blobURL = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.style.display = "none";
+  link.href = blobURL;
+  link.download = "counter-export.txt";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(blobURL);
+});
+
+document.querySelector("#exportCSV").addEventListener("click", () => {
+  const dateArray = dateParserExport(JSON.parse(localStorage.getItem("fall-counter-falls")));
+  const csvString = dateArray.join('\n');
+  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8" });
+  const blobURL = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.style.display = "none";
+  link.href = blobURL;
+  link.download = "counter-export.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(blobURL);
+});
+
 
 // This script is released to the public domain and may be used, modified and
 // distributed without restrictions. Attribution not necessary but appreciated.
@@ -108,7 +158,6 @@ function save() {
 }
 
 function load() {
-  console.log("load called");
   if (localStorage.getItem("fall-counter-falls") !== null) {
     const fallStrings = JSON.parse(localStorage.getItem("fall-counter-falls"));
     document.querySelector("h3").textContent = JSON.parse(
