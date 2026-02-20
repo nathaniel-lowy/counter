@@ -26,8 +26,8 @@ for (let i = 0; i < 200; i++) {
 
 function dateParserExport(data) {
   const options = {
-    weekday: "short",
-    month: "short",
+    weekday: "long",
+    month: "long",
     day: "numeric",
     year: "numeric",
     hour: "numeric",
@@ -35,18 +35,42 @@ function dateParserExport(data) {
   };
   const formatter = new Intl.DateTimeFormat("en-us", options);
   const dateArray = [];
-  data.forEach(date => {
+  data.forEach((date) => {
     const dateObject = new Date(date);
-    dateArray.push(formatter.format(dateObject));
+    const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObject.getDate()).padStart(2, "0");
+    const year = dateObject.getFullYear();
+
+    const hour = String(dateObject.getHours()).padStart(2, "0");
+    const minutes = String(dateObject.getMinutes()).padStart(2, "0");
+    const seconds = String(dateObject.getSeconds()).padStart(2, "0");
+
+    const string =
+      year +
+      "-" +
+      month +
+      "-" +
+      day +
+      " " +
+      hour +
+      ":" +
+      minutes +
+      ":" +
+      seconds;
+    const formatted = formatter.format(dateObject).replace(" at ", ", ");
+    const full = formatted + ", " + string;
+    dateArray.push(full);
   });
   return dateArray;
 }
 
 document.querySelector("#add-btn").addEventListener("click", addFall);
 document.querySelector("#exportText").addEventListener("click", () => {
-  const dateArray = dateParserExport(JSON.parse(localStorage.getItem("fall-counter-falls")));
-  const dateString = dateArray.join('\n');
-  const blob = new Blob([dateString], { type: "application/json" });
+  const dateArray = dateParserExport(
+    JSON.parse(localStorage.getItem("fall-counter-falls")),
+  );
+  const dateString = dateArray.join("\n");
+  const blob = new Blob([dateString], { type: "text/plain" });
   const blobURL = URL.createObjectURL(blob);
 
   const link = document.createElement("a");
@@ -60,8 +84,10 @@ document.querySelector("#exportText").addEventListener("click", () => {
 });
 
 document.querySelector("#exportCSV").addEventListener("click", () => {
-  const dateArray = dateParserExport(JSON.parse(localStorage.getItem("fall-counter-falls")));
-  const csvString = dateArray.join('\n');
+  const dateArray = dateParserExport(
+    JSON.parse(localStorage.getItem("fall-counter-falls")),
+  );
+  const csvString = dateArray.join("\n");
   const blob = new Blob([csvString], { type: "text/csv;charset=utf-8" });
   const blobURL = URL.createObjectURL(blob);
 
@@ -74,7 +100,6 @@ document.querySelector("#exportCSV").addEventListener("click", () => {
   document.body.removeChild(link);
   URL.revokeObjectURL(blobURL);
 });
-
 
 // This script is released to the public domain and may be used, modified and
 // distributed without restrictions. Attribution not necessary but appreciated.
